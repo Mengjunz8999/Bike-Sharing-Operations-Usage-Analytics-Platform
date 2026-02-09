@@ -1,35 +1,5 @@
 import pandas as pd
-
-
-
-#data clearing and create a clean data file
-path ={
-    "maintenance": "data/maintenance.csv",
-    "stations": "data/stations.csv",
-    "trips": "data/trips.csv",
-    "valid_stationsdata":"data/stations_clean.csv",
-    "valid_tripsdata":"data/trips_clean.csv"
-}
-
-def load_data()-> pd.Dataframe:
-        maintenance_df = pd.read_csv(path["maintenance"])
-        stations_df = pd.read_csv(path["stations"])
-        trips_df = pd.read_csv(path["trips"])
-
-        return maintenance_df, stations_df, trips_df
-
-maintenance_df, stations_df, trips_df = load_data()
-# print(f"Data loaded successfully:")
-# print(f"check data type (before):\nmaintenance:\n{maintenance_df.dtypes}\n\nstations:\n{stations_df.dtypes}\n\ntrips:\n{trips_df.dtypes}")
-#pack 3 variables into a tuple and print the type of the tuple
-# print(type(load_data()))
-
-#fix date format ， errors="coerce" will convert invalid parsing to NaT
-maintenance_df["date"] = pd.to_datetime(maintenance_df["date"], errors="coerce")
-trips_df["start_time"] = pd.to_datetime(trips_df["start_time"], errors="coerce")
-trips_df["end_time"] = pd.to_datetime(trips_df["end_time"], errors="coerce")
-
-# print(f"check data type (after):\nmaintenance:\n{maintenance_df.dtypes}\n\nstations:\n{stations_df.dtypes}\n\ntrips:\n{trips_df.dtypes}")
+import os
 
 class DataCleaner:
     def __init__(self, df):
@@ -43,33 +13,68 @@ class DataCleaner:
         self.df = self.df.drop_duplicates()
         return self
     
-    def filter_status(self,status:str):
+    def filter_status(self, status: str):
         self.df = self.df[self.df["status"] == status]
         return self
 
     def get_cleaned_data(self):
         return self.df
+
+def load_data(path):
+    """加载原始数据"""
+    maintenance_df = pd.read_csv(path["maintenance"])
+    stations_df = pd.read_csv(path["stations"])
+    trips_df = pd.read_csv(path["trips"])
+    return maintenance_df, stations_df, trips_df
+
+
+def load_clean_data() -> pd.DataFrame:
+    """数据清理函数"""
+    path = {
+        "maintenance": "data/maintenance.csv",
+        "stations": "data/stations.csv",
+        "trips": "data/trips.csv",
+        "stations_clean":"data/stations_clean.csv",
+        "trips_clean":"data/trips_clean.csv"
+    }
+
+    maintenance_df, stations_df, trips_df = load_data(path)
+    print(f"-------------maintenance Before-----------------------:\n{maintenance_df.dtypes}")
+    print(f"-------------trips Before-----------------------:\n{trips_df.dtypes}")
+    print(f"-------------station Before-----------------------:\n{stations_df.dtypes}")
+
+    # 修复日期格式
+    maintenance_df["date"] = pd.to_datetime(maintenance_df["date"], errors="coerce")
+    trips_df["start_time"] = pd.to_datetime(trips_df["start_time"], errors="coerce")
+    trips_df["end_time"] = pd.to_datetime(trips_df["end_time"], errors="coerce")
+
+    print(f"-------------maintenance After-----------------------:\n{maintenance_df.dtypes}")
+    print(f"-------------trips After-----------------------:\n{maintenance_df.dtypes}")
     
-data_cleaner_stationdata = DataCleaner(stations_df)
-data_cleaner_tripdata =DataCleaner(trips_df)
-valid_stationsdata  = data_cleaner_stationdata.drop_nan().drop_duplicates().get_cleaned_data()
-valid_tripsdata = data_cleaner_tripdata.drop_nan().drop_duplicates().filter_status("completed").get_cleaned_data()
 
-valid_stationsdata.to_csv("data/stations_clean.csv", index=False)
-valid_tripsdata.to_csv("data/trips_clean.csv", index=False)
+    # 数据清理
+    valid_stationsdata = DataCleaner(stations_df).drop_nan().drop_duplicates().get_cleaned_data()
+    valid_tripsdata = DataCleaner(trips_df).drop_nan().drop_duplicates().filter_status("completed").get_cleaned_data()
 
-print(valid_stationsdata.info())
-print(valid_tripsdata.info())
+    valid_stationsdata.to_csv(path["stations_clean"], index=False)
+    valid_tripsdata.to_csv(path["trips_clean"], index=False)
 
-# print(f"cleaned data info:\nmaintenance:\n{maintenance_df.info()}\n\nstations:\n{stations_df.info()}\n\ntrips:\n{trips_df.info()}")
+    # print(valid_stationsdata.info())
+    # print(valid_tripsdata.info())
+    return maintenance_df.copy(),valid_stationsdata, valid_tripsdata
 
 
+# 需要时才调用：load_clean_data()
+def check_and_load_clean_data():
+    """检查清理后的数据文件是否存在"""
+    trips_clean_path = "data/trips_clean.csv"
+    stations_clean_path = "data/stations_clean.csv"
     
-
-    
-    
-              
-               
-
-
-   
+    if os.path.exists(trips_clean_path) and os.path.exists(stations_clean_path):
+        print("✓ 清理后的数据文件已存在，直接加载...")
+        valid_stationsdata = pd.read_csv(stations_clean_path)
+        valid_tripsdata = pd.read_csv(trips_clean_path)
+        return valid_stationsdata, valid_tripsdata
+    else:
+        print("✗ 清理后的数据文件不存在，正在运行数据清理...")
+        return load_clean_data()
