@@ -49,7 +49,7 @@ def load_clean_data() -> pd.DataFrame:
     trips_df["end_time"] = pd.to_datetime(trips_df["end_time"], errors="coerce")
 
     print(f"-------------maintenance After-----------------------:\n{maintenance_df.dtypes}")
-    print(f"-------------trips After-----------------------:\n{maintenance_df.dtypes}")
+    print(f"-------------trips After-----------------------:\n{trips_df.dtypes}")
     
 
     # 数据清理
@@ -62,7 +62,7 @@ def load_clean_data() -> pd.DataFrame:
     # print(valid_stationsdata.info())
     # print(valid_tripsdata.info())
     return maintenance_df.copy(),valid_stationsdata, valid_tripsdata
-
+# load_clean_data()
 
 # 需要时才调用：load_clean_data()
 def check_and_load_clean_data():
@@ -74,6 +74,9 @@ def check_and_load_clean_data():
         print("✓ 清理后的数据文件已存在，直接加载...")
         valid_stationsdata = pd.read_csv(stations_clean_path)
         valid_tripsdata = pd.read_csv(trips_clean_path)
+        # 转换datetime列
+        valid_tripsdata["start_time"] = pd.to_datetime(valid_tripsdata["start_time"], errors="coerce")
+        valid_tripsdata["end_time"] = pd.to_datetime(valid_tripsdata["end_time"], errors="coerce")
         return valid_stationsdata, valid_tripsdata
     else:
         print("✗ 清理后的数据文件不存在，正在运行数据清理...")
