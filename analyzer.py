@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 '''
 1. Total number of trips, total distance traveled, and average trip duration
@@ -32,8 +33,9 @@ def tripsdata_analysis(df) -> dict:
     top_end_stations = df["end_station_id"].value_counts().head(10).index.tolist()
 
     # What are the peak usage hours during the day? -> dataframe series
-    # .size() 可以在这里理解成groupby的count方法
-    peak_usage_hours = df.groupby(df["start_time"].dt.hour).size().sort_values(ascending=False).head(10)
+    # .size() 可以在这里理解成groupby的count方法,第二列是出现的次数
+    peak_df = df.groupby(df["start_time"].dt.hour).size().sort_values(ascending=False).head(10)
+    peak_usage_hours = peak_df.reset_index(name = "counts")
 
     # What is the average trip distance by user type (casual vs. member)?
     # casual    7.52
@@ -47,8 +49,6 @@ def tripsdata_analysis(df) -> dict:
     total_usage_minutes = df["duration_minutes"].sum()
     avg_usage_hours_per_bike = (total_usage_minutes / 60) / df["bike_id"].nunique()
     bike_utilization_rate = ((avg_usage_hours_per_bike / 24)*100).round(2)
-
-    # Show the monthly trip trend over time — is ridership growing/////////////////
 
     # top 15 most active users by trip count?
     active_users_top_15 = df["user_id"].value_counts().head(15).index.tolist()
@@ -135,18 +135,34 @@ def maintenance_data_analysis(df):
 def data_analysis_report(analysis_result: dict, filename="output/summary_report.txt"):
     """
     Generate a summary report using Pandas and save it to a text file.
+    Also export top stations and top users to separate CSV files.
     """
 
+    # Ensure output folder exists
+    os.makedirs("output", exist_ok=True)
+
+    # === Export Top Stations ===
+    top_stations_df = pd.DataFrame({
+        "top_start_stations": analysis_result["top_start_stations"],
+        "top_end_stations": analysis_result["top_end_stations"]
+    })
+    top_stations_df.to_csv("output/top_stations.csv", index=False)
+
+    # === Export Top Users ===
+    top_users_df = pd.DataFrame({
+        "top_active_users": analysis_result["active_users_top_15"]
+    })
+    top_users_df.to_csv("output/top_users.csv", index=False)
+
+    # === Build Summary Report ===
     report_lines = []
 
-    # === Basic Summary ===
     report_lines.append("=== Bike Sharing Data Analysis Summary Report ===\n")
 
     report_lines.append(f"Total Trips: {analysis_result['total_trips']}")
     report_lines.append(f"Total Distance (km): {analysis_result['total_distance']:.2f}")
     report_lines.append(f"Average Trip Duration: {analysis_result['average_duration']}\n")
 
-    # === Top Stations ===
     report_lines.append("Top 10 Start Stations:")
     report_lines.extend([f"  - {s}" for s in analysis_result["top_start_stations"]])
     report_lines.append("----")
@@ -155,48 +171,41 @@ def data_analysis_report(analysis_result: dict, filename="output/summary_report.
     report_lines.extend([f"  - {s}" for s in analysis_result["top_end_stations"]])
     report_lines.append("----")
 
-    # === Peak Hours ===
     report_lines.append("Peak Usage Hours (Top 10):")
-    report_lines.append(analysis_result["peak_usage_hours"].to_string(index=False))
+    report_lines.append(analysis_result["peak_usage_hours"].to_string(index = False))
     report_lines.append("----")
 
-    # === Distance by User Type ===
     report_lines.append("Average Trip Distance by User Type:")
     report_lines.append(f"  Casual: {analysis_result['average_distance_casual']} km")
     report_lines.append(f"  Member: {analysis_result['average_distance_member']} km\n")
 
-    # === Utilization ===
     report_lines.append(f"Bike Utilization Rate: {analysis_result['bike_utilization_rate']}%\n")
 
-    # === Active Users ===
     report_lines.append("Top 15 Most Active Users:")
     report_lines.extend([f"  - {u}" for u in analysis_result["active_users_top_15"]])
     report_lines.append("----")
 
-    # === Station-to-Station Routes ===
     report_lines.append("Top 10 Station-to-Station Routes:")
     report_lines.append(analysis_result["station_to_station_top10"].to_string())
     report_lines.append("----")
 
-    # === Completion Rate ===
     report_lines.append(f"Trip Completion Rate: {analysis_result['trips_completed_rate']}%")
     report_lines.append(f"Trip Cancellation Rate: {analysis_result['trips_cancelled_rate']}%\n")
 
-    # === Avg Trips per User ===
     report_lines.append("Average Trips per User:")
     report_lines.append(f"  Casual: {analysis_result['avg_trips_casual']}")
     report_lines.append(f"  Member: {analysis_result['avg_trips_member']}\n")
 
-    # === Outliers ===
     report_lines.append("Outlier Trips (Duration-based):")
     report_lines.append(f"Total Outliers: {len(analysis_result['outliers_duration'])}")
-    report_lines.append("First 10 Outliers:")
-    report_lines.append(analysis_result["outliers_duration"].head(10).to_string())
+    report_lines.append(analysis_result["outliers_duration"].to_string())
     report_lines.append("----")
 
-    # === Write to file using Pandas ===
+    # === Write Summary Report ===
     pd.Series(report_lines).to_csv(filename, index=False, header=False)
 
     print(f"Summary report saved to {filename}")
+    print("Top stations saved to output/top_stations.csv")
+    print("Top users saved to output/top_users.csv")
 
 
