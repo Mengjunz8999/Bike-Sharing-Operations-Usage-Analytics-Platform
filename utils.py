@@ -16,7 +16,7 @@ class DataCleaner:
     def filter_status(self, status: str):
         self.df = self.df[self.df["status"] == status]
         return self
-
+    # self 是对象本身，self.df，即它里面的属性，即要获取的DataFrame
     def get_cleaned_data(self):
         return self.df
 
