@@ -69,15 +69,17 @@ def check_and_load_clean_data():
     """检查清理后的数据文件是否存在"""
     trips_clean_path = "data/trips_clean.csv"
     stations_clean_path = "data/stations_clean.csv"
+    maintenance_data_path = "data/maintenance.csv"
     
     if os.path.exists(trips_clean_path) and os.path.exists(stations_clean_path):
-        print("✓ 清理后的数据文件已存在，直接加载...")
+        print("✓ The cleaned data file already exists; just load it directly....")
         valid_stationsdata = pd.read_csv(stations_clean_path)
         valid_tripsdata = pd.read_csv(trips_clean_path)
+        maintenance_copy = pd.read_csv(maintenance_data_path)
         # 转换datetime列
         valid_tripsdata["start_time"] = pd.to_datetime(valid_tripsdata["start_time"], errors="coerce")
         valid_tripsdata["end_time"] = pd.to_datetime(valid_tripsdata["end_time"], errors="coerce")
-        return valid_stationsdata, valid_tripsdata
+        return maintenance_copy,valid_stationsdata, valid_tripsdata
     else:
-        print("✗ 清理后的数据文件不存在，正在运行数据清理...")
+        print("✗ The cleaned data file does not exist; data cleaning is now in progress ...")
         return load_clean_data()
