@@ -1,0 +1,104 @@
+"=== Bike Sharing Data Analysis Summary Report ===
+"
+"Total Trips: user_type
+casual    538
+member    977
+Name: user_id, dtype: int64"
+Total Distance (km): 9488.90
+"Average Trip Duration: 23.51
+"
+Top 10 Start Stations:
+  - ST104
+  - ST106
+  - ST103
+  - ST107
+  - ST102
+  - ST113
+  - ST112
+  - ST100
+  - ST105
+  - ST108
+----
+Top 10 End Stations:
+  - ST114
+  - ST104
+  - ST105
+  - ST103
+  - ST100
+  - ST106
+  - ST101
+  - ST108
+  - ST107
+  - ST112
+----
+Peak Usage Hours (Top 10):
+"start_time
+84
+82
+81
+80
+78
+78
+78
+77
+77
+76"
+----
+Average Trip Distance by User Type:
+  Casual: 7.52 km
+"  Member: 7.79 km
+"
+"Bike Utilization Rate: 44.01%
+"
+Top 15 Most Active Users:
+  - USR1014
+  - USR1040
+  - USR1080
+  - USR1032
+  - USR1189
+  - USR1135
+  - USR1004
+  - USR1053
+  - USR1174
+  - USR1034
+  - USR1162
+  - USR1161
+  - USR1094
+  - USR1047
+  - USR1103
+----
+Top 10 Station-to-Station Routes:
+"start_station_id  end_station_id
+ST113             ST105             13
+ST107             ST107             12
+ST103             ST100             11
+ST108             ST105             11
+ST106             ST114             10
+ST101             ST105             10
+ST103             ST101             10
+ST107             ST114             10
+ST108             ST106             10
+ST114             ST104             10"
+----
+Trip Completion Rate: 83.17%
+"Trip Cancellation Rate: 11.68%
+"
+Average Trips per User:
+  Casual: 8.28
+"  Member: 15.03
+"
+Outlier Trips (Duration-based):
+Total Outliers: 51
+First 10 Outliers:
+"     trip_id  user_id user_type bike_id bike_type start_station_id end_station_id          start_time            end_time  duration_minutes  distance_km     status
+13   TR10015  USR1007    member   BK346   classic            ST113          ST102 2024-05-24 10:25:00 2024-05-24 11:47:11              82.2        12.62  completed
+52   TR10068  USR1071    casual   BK241  electric            ST110          ST106 2024-09-13 19:36:00 2024-09-13 21:20:43             104.7        12.66  completed
+74   TR10100  USR1070    member   BK274   classic            ST108          ST107 2024-11-18 14:02:00 2024-11-18 14:02:00              77.9        13.00  completed
+81   TR10108  USR1102    member   BK331   classic            ST107          ST110 2024-07-28 19:46:00 2024-07-28 21:12:44              86.7        11.37  completed
+155  TR10194  USR1044    member   BK229  electric            ST107          ST113 2024-11-08 10:57:00 2024-11-08 12:34:14              97.2         2.60  completed
+160  TR10199  USR1189    casual   BK286  electric            ST103          ST111 2024-09-26 14:39:00 2024-09-26 16:23:58             105.0        11.69  completed
+210  TR10261  USR1040    casual   BK329   classic            ST106          ST103 2024-09-30 08:27:00 2024-09-30 09:58:49              91.8         1.26  completed
+222  TR10274  USR1150    member   BK328   classic            ST111          ST105 2024-06-17 21:03:00 2024-06-17 22:18:37              75.6        14.92  completed
+233  TR10288  USR1047    member   BK307  electric            ST110          ST102 2024-07-24 21:58:00 2024-07-25 01:10:19             192.3         6.38  completed
+244  TR10299  USR1043    member   BK323  electric            ST107          ST101 2024-11-14 15:40:00 2024-11-14 17:18:15              98.3         1.48  completed"
+----

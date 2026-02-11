@@ -8,6 +8,7 @@ def main():
     # Analysis result
     analyzer.maintenance_data_analysis(maintenance_data_copy)
     analyzer.tripsdata_analysis(valid_tripsdata)
+    analyzer.data_analysis_report(analyzer.data_analysis_results)
 
   
 
