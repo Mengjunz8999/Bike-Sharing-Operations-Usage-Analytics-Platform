@@ -14,7 +14,7 @@ class Entity(ABC):
     id: str
     created_at: datetime
 
-    # 
+    # 因为class 属性有逻辑要处理，所以需要post_init, 如果只是赋值，则不需要post_init
     def __post_init__(self):
         if not self.id:
             raise ValueError("id must be a non-empty string")
@@ -63,7 +63,7 @@ class Bike(Entity):
         if value not in self.VALID_STATUSES:
             raise ValueError(f"Invalid status: {value}")
         self._status = value
-
+    # 因为父类中，有逻辑需要执行，所以这个这里也需要继承下来
     def __str__(self):
         return f"Bike({self.id}, {self.bike_type}, {self.status})"
 
@@ -82,6 +82,7 @@ class Bike(Entity):
 class ClassicBike(Bike):
     gear_count: int = 7
 
+    # 因为父类中，有逻辑需要执行，所以这个这里也需要继承下来
     def __post_init__(self):
         super().__post_init__()
 
@@ -155,11 +156,13 @@ class User(Entity):
 
     def __str__(self):
         return f"User({self.name}, type={self.user_type} has been created)"
-    
+
+# =========================
+# test user und bike object creating
+# =========================
 # user01 = User(1,datetime.now(),"Anna", "xxx@xxx","member")
 # print(user01)
-
-# 
-bike01 = ClassicBike(1,datetime.now,"classic","available",8)
-print(bike01)
+ 
+# bike01 = ClassicBike(1,datetime.now,"classic","available",8)
+# print(bike01)
 
