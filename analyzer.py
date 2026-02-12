@@ -34,7 +34,7 @@ def tripsdata_analysis(df) -> dict:
     top_end_stations = df["end_station_id"].value_counts().head(10).index.tolist()
 
     # What are the peak usage hours during the day? -> dataframe series
-    # .size() 可以在这里理解成groupby的count方法,第二列是出现的次数
+    # .size() 可以在这里理解成groupby的count方法,第二列是出现的次数，sort_values 的默认从小到大排序，ascending=False 从大到小
     peak_df = df.groupby(df["start_time"].dt.hour).size().sort_values(ascending=False).head(10)
     peak_usage_hours = peak_df.reset_index(name = "counts")
 

@@ -8,7 +8,7 @@ from typing import ClassVar
 # =========================
 # Base Entity
 # =========================
-# ABC 如果有abstractmethod，不可以实例化，没有的话，可以正常实例化
+# ABC 不是用于实例化，而是用于被继承，如果有abstractmethod，不可以实例化，没有的话，可以正常实例化
 @dataclass
 class Entity(ABC):
     id: str
@@ -34,7 +34,7 @@ class Entity(ABC):
 @dataclass
 class Bike(Entity):
     bike_type: str
-    # repr false 在打印该字段时，不打印它
+    # repr false，只影响__repr__的打印， 可选参数，_内部变量，用property读取，用setter增加逻辑
     _status: str = field(repr=False)
 
     # 如果没有ClassVar，它则是实例化的变量，但这里它需要是Class级别的
