@@ -22,13 +22,14 @@ data_analysis_results = {}
 
 def tripsdata_analysis(df) -> dict:
     # Total number of trips, total distance traveled, and average trip duration
+    # total_seconds() 把时间转成秒数，float
     total_trips = len(df)
     total_distance = df["distance_km"].sum()
     average_duration = ((df["end_time"] - df["start_time"]).mean().total_seconds())/60
     average_duration = round(average_duration,2)
 
     #  top 10 most popular start stations and end stations
-    # value_counts(ascending=True) 总结出现的次数，默认从高到低排列，ascending=True升序排列
+    # value_counts(ascending=True) 总结出现的次数，默认从高到低排列，ascending=True升序排列,这里的index 是 user_id， values = counts，取值要index
     top_start_stations = df["start_station_id"].value_counts().head(10).index.tolist()
     top_end_stations = df["end_station_id"].value_counts().head(10).index.tolist()
 
@@ -66,10 +67,10 @@ def tripsdata_analysis(df) -> dict:
     trips_completed_rate = (trips_completed_count / len(trips_data_all) * 100).round(2)
     
     # the average number of trips per user, segmented by user type?
-    total_trips = (trips_data_all.groupby("user_type")["user_id"].count())  # 每种 user_type 的总行程数
+    total_trip = (trips_data_all.groupby("user_type")["user_id"].count())  # 每种 user_type 的总行程数
     avg_trips = (trips_data_all.groupby("user_type")["user_id"].nunique())  # 每种 user_type 的独立用户数
-    avg_trips_casual = (total_trips["casual"]/avg_trips["casual"]).round(2) # 总casual骑行数 / casual 类里的独立用户数
-    avg_trips_member = (total_trips["member"]/avg_trips["member"]).round(2) # 总member骑行数 / member 类里的独立用户数
+    avg_trips_casual = (total_trip["casual"]/avg_trips["casual"]).round(2) # 总casual骑行数 / casual 类里的独立用户数
+    avg_trips_member = (total_trip["member"]/avg_trips["member"]).round(2) # 总member骑行数 / member 类里的独立用户数
 
     # outlier trips (unusually duration)
     # 把duration 这列的数据按顺序排序，排在25%的某个数值，Q1就是这个数值，如果只用df["duration"].quantile(0.5)，只能检测中间数，不能显示宽度

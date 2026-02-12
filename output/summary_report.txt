@@ -1,9 +1,6 @@
 "=== Bike Sharing Data Analysis Summary Report ===
 "
-"Total Trips: user_type
-casual    538
-member    977
-Name: user_id, dtype: int64"
+Total Trips: 1233
 Total Distance (km): 9488.90
 "Average Trip Duration: 23.51
 "

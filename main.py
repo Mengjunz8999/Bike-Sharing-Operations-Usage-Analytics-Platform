@@ -5,7 +5,7 @@ import visualization
 
 def main():
     # load data cleaner
-    # maintenance_data_copy,valid_stationsdata,valid_tripsdata = utils.check_and_load_clean_data()
+    maintenance_data_copy,valid_stationsdata,valid_tripsdata = utils.check_and_load_clean_data()
     
     # #Analysis result
     # analyzer.maintenance_data_analysis(maintenance_data_copy)
