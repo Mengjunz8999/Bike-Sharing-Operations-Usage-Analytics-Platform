@@ -1,89 +1,165 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
+from abc import ABC,abstractmethod
+# ClassVar 是说这个变量是Class级别的，不是对象级别的
+from typing import ClassVar
 
 
+# =========================
+# Base Entity
+# =========================
+# ABC 如果有abstractmethod，不可以实例化，没有的话，可以正常实例化
+@dataclass
 class Entity(ABC):
-    def __init__(self, shared_id: str, created_at: datetime):
-        self.shared_id = shared_id
-        self.created_at = created_at
-    
+    id: str
+    created_at: datetime
+
+    # 
+    def __post_init__(self):
+        if not self.id:
+            raise ValueError("id must be a non-empty string")
+        
     @abstractmethod
     def __str__(self):
-        pass    #>>>>>?????????????
+        pass
 
+    @abstractmethod
     def __repr__(self):
-        pass   #>>>>>?????????????
+        pass
 
+
+# =========================
+# Bike
+# =========================
 @dataclass
 class Bike(Entity):
-    bike_id: str
     bike_type: str
-    status: "available"|"in_use" |"maintenance"
+    # repr false 在打印该字段时，不打印它
+    _status: str = field(repr=False)
+
+    # 如果没有ClassVar，它则是实例化的变量，但这里它需要是Class级别的
+    VALID_TYPES: ClassVar[tuple[str, ...]] = ("classic", "electric")
+    VALID_STATUSES: ClassVar[tuple[str, ...]] = (
+        "available",
+        "in_use",
+        "maintenance",
+    )
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        if self.bike_type not in self.VALID_TYPES:
+            raise ValueError(f"Invalid bike_type: {self.bike_type}")
+
+        self.status = self._status  # 通过 setter 校验
+
+    # -------- status property --------
+    @property
+    def status(self) -> str:
+        return self._status
+
+    @status.setter
+    def status(self, value: str):
+        if value not in self.VALID_STATUSES:
+            raise ValueError(f"Invalid status: {value}")
+        self._status = value
 
     def __str__(self):
-        pass #>>>>>?????????????
+        return f"Bike({self.id}, {self.bike_type}, {self.status})"
 
     def __repr__(self):
-        pass #>>>>>?????????????
+        return (
+            f"Bike(id={self.id!r}, "
+            f"bike_type={self.bike_type!r}, "
+            f"status={self.status!r})"
+        )
 
+
+# =========================
+# Classic Bike
+# =========================
+@dataclass
+class ClassicBike(Bike):
+    gear_count: int = 7
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        if self.gear_count <= 0:
+            raise ValueError("gear_count must be positive")
+
+        if self.bike_type != "classic":
+            self.bike_type = "classic"
+
+    def __str__(self):
+        return f"Your ClassicBike({self.id}, gears={self.gear_count}) has been successfully created in system, und it is {self._status}.!"
+
+
+# =========================
+# Electric Bike
+# =========================
+@dataclass
+class ElectricBike(Bike):
+    battery_level: float = 100.0
+    max_range_km: float = 50.0
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        if not (0 <= self.battery_level <= 100):
+            raise ValueError("battery_level must be between 0 and 100")
+
+        if self.max_range_km <= 0:
+            raise ValueError("max_range_km must be positive")
+
+        if self.bike_type != "electric":
+            self.bike_type = "electric"
+
+    def __str__(self):
+        return (
+            f"ElectricBike({self.id}, "
+            f"battery={self.battery_level}%)"
+        )
+
+
+# =========================
+# Station
+# =========================
 @dataclass
 class Station(Entity):
-    station_id: str
     name: str
     capacity: int
     latitude: float
     longitude: float
 
     def __str__(self):
-        pass #>>>>>?????????????
+        return f"Station({self.name}, capacity={self.capacity})"
 
-    def __repr__(self):
-        pass #>>>>>?????????????
 
+# =========================
+# User
+# =========================
 @dataclass
 class User(Entity):
-    user_id: str
     name: str
     email: str
-    user_type: "casual"|"member"
-    
+    user_type: str
+
+    VALID_TYPES: ClassVar[tuple[str, ...]] = ("casual", "member")
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        if self.user_type not in self.VALID_TYPES:
+            raise ValueError("Invalid user_type")
+
     def __str__(self):
-        pass #>>>>>?????????????
+        return f"User({self.name}, type={self.user_type} has been created)"
+    
+# user01 = User(1,datetime.now(),"Anna", "xxx@xxx","member")
+# print(user01)
 
-    def __repr__(self):
-        pass #>>>>>?????????????
+# 
+bike01 = ClassicBike(1,datetime.now,"classic","available",8)
+print(bike01)
 
-#????????????? no __str__, no problem
-@dataclass
-class CasualUser(User):
-     day_pass_count: int = 0
-
-@dataclass
-class MemberUser(User):
-    membership_start: datetime
-    membership_end: datetime
-    tier:"basic"|"premium"
-
-@dataclass
-class Trip():
-    trip_id: str
-    user: str
-    bike: str
-    start_station: str
-    end_station: str
-    start_time: datetime
-    end_time: datetime
-    distance_km: float
-  
-@dataclass
-class MaintenanceRecord: 
-    record_id:str
-    bike:str
-    date:datetime
-    maintenance_type:str
-    cost:float
-    description:str
-
-# @dataclass
-# calss BikeShareSystem:  ？？要干嘛
