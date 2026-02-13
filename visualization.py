@@ -18,7 +18,7 @@ from pathlib import Path
 # __file__当前文件，- .resolve() → 转成绝对路径
 FIGURES_DIR = Path(__file__).resolve().parent / "output" / "figures"
 
-# resolve() → 转成绝对路径， parent → 当前文件所在的文件夹
+# resolve() → 转成绝对路径， parent → 当前文件所在的文件夹，close()结束编辑
 def _save_figure(fig: plt.Figure, filename: str) -> None:
     """Save a Matplotlib figure to the figures directory."""
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -43,9 +43,11 @@ def plot_trips_per_station(trips: pd.DataFrame, stations: pd.DataFrame) -> None:
         trips["start_station_id"]
         .value_counts()
         .head(10)
-        .rename_axis("station_id")
-        .reset_index(name="trip_count")
+        .rename_axis("station_id") # 给结果的series 的index列起个名字
+        .reset_index(name="trip_count") # 给结果的series 的value列起个名字
     )
+
+    # 把 station_name 加进 counts，on - 以 station_id 为键，how - 这里是counts调用，所以它为左表
     merged = counts.merge(
         stations[["station_id", "station_name"]],
         on="station_id",
