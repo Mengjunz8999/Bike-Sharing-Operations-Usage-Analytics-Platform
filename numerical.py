@@ -32,7 +32,7 @@ def station_distance_matrix(latitudes: np.ndarray, longitudes: np.ndarray) -> np
         raise ValueError("Latitude and longitude counts do not match and will lead to incorrect data calculations.")
     
     latitudes = np.array(latitudes)
-    longitudes = np.array(latitudes)
+    longitudes = np.array(longitudes)
 
     # reshape 成列向量，: 切片选取，这里是所有的index，newaxis [1,2,3] ->[[1],[2],[3]]
     lat_col = latitudes[:, np.newaxis]  # (n,1)
