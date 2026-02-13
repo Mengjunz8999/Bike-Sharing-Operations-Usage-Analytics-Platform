@@ -43,7 +43,9 @@ def load_clean_data() -> pd.DataFrame:
     print(f"-------------trips Before-----------------------:\n{trips_df.dtypes}")
     print(f"-------------station Before-----------------------:\n{stations_df.dtypes}")
 
-    # 修复日期格式
+    # 修复日期格式,errors="coerce"> "raise"抛异常,解析失败的值会被 强制转换为 NaT，ignore，原样返回字符串
+
+
     maintenance_df["date"] = pd.to_datetime(maintenance_df["date"], errors="coerce")
     trips_df["start_time"] = pd.to_datetime(trips_df["start_time"], errors="coerce")
     trips_df["end_time"] = pd.to_datetime(trips_df["end_time"], errors="coerce")
