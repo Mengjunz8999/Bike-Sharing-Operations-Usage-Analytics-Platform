@@ -64,42 +64,41 @@ dist_matrix_ST100_ST103:
 '''
 # latitudes: np.ndarray, longitudes: np.ndarray
 def min_max_distance() -> np.ndarray:
-    # return dataframe
     station_df = pd.read_csv("data/stations_clean.csv")
     latitude = station_df["latitude"]
     longitude = station_df["longitude"]
 
-    stations_matrix = station_distance_matrix(latitude,longitude)
-
-    # 把 n 维变成 1 维， return np.array, 所以可以做向量比较
-    flat = stations_matrix.flatten()
-    flat_nonzero = flat[flat > 0]
-    
-    # 找最小和最大值
-    min_dist = flat_nonzero.min()
-    max_dist = flat_nonzero.max()
-
-    # 原矩阵中的位置: 计算公式，比如min的index在flat是 5，而 matrix：3x3，那么它在matrix是5//3=1，5%3=2，matrix的index（1，2）
-    # np.array 没有index，需要list找
-    min_index = flat.tolist().index(min_dist)
-    max_index = flat.tolist().index(max_dist)
-
-    # 转回二维坐标 (i, j)，i行号，j列号，e.g arr(i,j) ,divmod(a, b) -> (a // b, a % b)
+    stations_matrix = station_distance_matrix(latitude, longitude)
     n = stations_matrix.shape[0]
-    min_i, min_j = divmod(min_index, n)
-    max_i, max_j = divmod(max_index, n)
 
-    # min_i df中的行号，再取此行的列名就可以找到某值
+    # triu() Only take the upper triangle (excluding the diagonal) to avoid duplicate pairs and self-distances
+    # ones(), dtype=bool --> all elements are True
+    # triu() --> based on k, turn the lower triangle (and diagonal) into False      
+    mask = np.triu(np.ones((n, n), dtype=bool), k=1)
+    upper = stations_matrix[mask]  # 1D array，only extrac the true index elements
+
+    min_dist = upper.min()
+    max_dist = upper.max()
+
+    # Find the 2D coordinates in the upper triangle, 
+    # use np.argmin/argmax to locate the position in upper, then map it back to the original matrix coordinates
+    min_flat_idx = np.argmin(upper)
+    max_flat_idx = np.argmax(upper)
+
+    # Map the upper triangle flat index back to the original matrix coordinates (i, j)
+    triu_indices = np.triu_indices(n, k=1)  # (row_indices, col_indices)
+    min_i, min_j = triu_indices[0][min_flat_idx], triu_indices[1][min_flat_idx]
+    max_i, max_j = triu_indices[0][max_flat_idx], triu_indices[1][max_flat_idx]
+
     print("-----------------------------------------------------")
     print("min_dist:", min_dist)
-    print("min_dist_stations:", station_df.iloc[min_i]["station_id"], station_df.iloc[min_j]["station_id"])
+    print("min_dist_stations:", station_df.iloc[min_i]["station_name"]," <-->", station_df.iloc[min_j]["station_name"])
 
     print("max_dist:", max_dist)
-    print("max_dist_stations:", station_df.iloc[max_i]["station_id"], station_df.iloc[max_j]["station_id"])
+    print("max_dist_stations:", station_df.iloc[max_i]["station_name"], " <-->",station_df.iloc[max_j]["station_name"])
     print("-----------------------------------------------------")
 
     print(stations_matrix)
-
 min_max_distance()
 
 
