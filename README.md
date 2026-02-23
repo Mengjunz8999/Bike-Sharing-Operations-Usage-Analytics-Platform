@@ -63,3 +63,58 @@ date,
 maintenance_type,
 cost,
 description
+
+# Bike Sharing Operations & Usage Analytics Platform — Frontend
+
+Admin dashboard built with React, TypeScript, Vite, and Tailwind CSS. Corresponds to the Factory Pattern backend (`factories.py`).
+
+## Project Structure
+
+```
+frontend/
+├── src/
+│   ├── main.tsx              # Entry point
+│   ├── App.tsx               # Main page with filter logic
+│   ├── types.ts              # TypeScript types (mirrors backend model.py)
+│   ├── index.css             # Global styles + Tailwind directives
+│   ├── components/
+│   │   ├── BikeCard.tsx      # Bike card (ClassicBike / ElectricBike)
+│   │   ├── UserCard.tsx      # User card (CasualUser / MemberUser)
+│   │   └── StatsBar.tsx      # Top statistics bar
+│   └── data/
+│       └── mockData.ts       # Mock data — replace with API calls later
+├── index.html
+├── package.json
+├── vite.config.ts
+├── tailwind.config.js
+├── postcss.config.js
+└── tsconfig.app.json
+```
+
+## Features
+
+- 🚲 **Bikes tab** — View all bikes, filter by type (classic / electric) and status (available / rented / maintenance)
+- 👤 **Users tab** — View all users, filter by type (casual / member); members show tier and membership start date
+- 📊 **Stats bar** — Total bikes, available bikes, total users, member count
+- 🔍 **Search** — Search by bike ID or user name / email
+
+## Getting Started
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Tech Stack
+
+- [React 18](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite 7](https://vite.dev/)
+- [Tailwind CSS v3](https://tailwindcss.com/)
+
+## Connecting to the Backend
+
+Data currently comes from `src/data/mockData.ts`. Once `create_user()` in `factories.py` is implemented, replace the mock data with real `fetch` calls to your API.
