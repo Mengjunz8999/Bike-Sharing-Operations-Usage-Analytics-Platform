@@ -4,7 +4,7 @@ This data Analytics system is for sharing-bick trip records, station usage, flee
 
 # Function list
 
-"""
+'''
 Bike-Sharing-Operations-Usage-Analytics-Platform
 ├─ analyzer.py #analysis methods, analysis report export to file
 ├─ data
@@ -30,7 +30,7 @@ Bike-Sharing-Operations-Usage-Analytics-Platform
 ├─ requirements.txt #dependencies
 ├─ utils.py #data clean
 └─ visualization.py #data visualization & export .png files
-"""
+'''
 
 # Data Model
 
