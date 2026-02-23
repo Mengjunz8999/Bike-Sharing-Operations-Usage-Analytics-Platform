@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #0a0a0f;
+    color: #f5f2eb;
+    font-family: 'DM Sans', sans-serif;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(200, 255, 0, 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 10%, rgba(232, 93, 38, 0.06) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-slate border border-white/5 rounded-2xl p-5 transition-all duration-200;
+  }
+  .card:hover {
+    @apply border-lime/20 -translate-y-0.5;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium;
+  }
+  .btn-primary {
+    @apply bg-lime text-ink font-body font-semibold px-5 py-2.5 rounded-xl hover:bg-lime/90 transition-all duration-150 active:scale-95;
+  }
+  .btn-ghost {
+    @apply border border-white/10 text-mist font-body px-4 py-2 rounded-xl hover:border-white/30 hover:text-paper transition-all duration-150;
+  }
+  .tab-active {
+    @apply bg-lime text-ink;
+  }
+  .tab-inactive {
+    @apply text-mist hover:text-paper;
+  }
+}
