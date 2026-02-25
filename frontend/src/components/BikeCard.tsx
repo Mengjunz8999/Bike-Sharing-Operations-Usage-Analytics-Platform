@@ -1,4 +1,4 @@
-import { Bike, ClassicBike, ElectricBike } from '../types'
+import { Bike, ClassicBike, ElectricBike } from '../data/types'
 
 interface Props {
   bike: Bike

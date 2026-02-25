@@ -115,6 +115,10 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 - [Vite 7](https://vite.dev/)
 - [Tailwind CSS v3](https://tailwindcss.com/)
 
+## React modules call direction
+
+index.html -> main.tsx -> app.tsx ...
+
 ## Connecting to the Backend
 
 Data currently comes from `src/data/mockData.ts`. Once `create_user()` in `factories.py` is implemented, replace the mock data with real `fetch` calls to your API.

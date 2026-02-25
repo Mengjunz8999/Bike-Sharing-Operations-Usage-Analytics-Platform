@@ -1,4 +1,4 @@
-import { User, MemberUser } from '../types'
+import { User, MemberUser } from '../data/types'
 
 interface Props {
   user: User

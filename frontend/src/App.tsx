@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { mockBikes, mockUsers } from './data/mockData'
-import { Bike, User } from './types'
+import { Bike, User } from './data/types'
 import BikeCard from './components/BikeCard'
 import UserCard from './components/UserCard'
 import StatsBar from './components/StatsBar'

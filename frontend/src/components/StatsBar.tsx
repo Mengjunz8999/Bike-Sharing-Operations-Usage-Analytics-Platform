@@ -1,4 +1,4 @@
-import { DashboardStats } from '../types'
+import { DashboardStats } from '../data/types'
 
 interface Props {
   stats: DashboardStats
